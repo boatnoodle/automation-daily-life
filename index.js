@@ -7,7 +7,7 @@ const SUPABASE_URL = "https://euygtomxdupnmvsyvbud.supabase.co";
 const SUPABASE_KEY =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV1eWd0b214ZHVwbm12c3l2YnVkIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTY3MTY2NzkxMSwiZXhwIjoxOTg3MjQzOTExfQ.CXIXNfLrfGgmKZ4SmXePrEvenSl8OKY3xmVFRE5qrjA";
 const USER_OAUTH_TOKEN_SLACK =
-  "xoxp-887407938822-872418203922-4549019594038-2ad5c371ce1a3013f10e1846fed6cf79";
+  "xoxp-887407938822-872418203922-4556156778277-6fc3f8703cf8b25188ac6385b4c8dc35";
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 const slackWebClient = new WebClient(USER_OAUTH_TOKEN_SLACK);
@@ -38,12 +38,11 @@ async function sendMessageToSlack(req, res) {
       }
     );
     const task = await response.json();
-
-    if (task.status.status === "in progress") {
+    if (!task.err && task.status.status === "in progress") {
       doing_content_block += "• " + task.name + ` ${task.url}` + "\n\n";
     } 
 
-    if (task.status.status === "done") {
+    if (!task.err && task.status.status === "done") {
       done_content_block += "• " + task.name + ` ${task.url}` + "\n\n";
     }
   }
@@ -91,30 +90,27 @@ async function manageClickUpWebhook(req, res) {
       }
 
       const { user, before, after } = history_items[0];
-      if (user.id !== 3665453 && user.email === "nattasit@futuremakers.co.th"){
-        console.log("This user is not me")
-        res.send("OK");
-      }
-
-      if (after.status === "in progress" || after.status === "done") {
-        const { data, error } = await supabase
-          .from("clickup-task-update-webhook")
-          .select("*")
-          .eq("task_id", task_id);
-
-        if (data.length > 0) {
-          await supabase
+      if (user.id === 3665453 && user.email === "nattasit@futuremakers.co.th"){
+        if (after.status === "in progress" || after.status === "done") {
+          const { data, error } = await supabase
             .from("clickup-task-update-webhook")
-            .update({ status: after.status })
+            .select("*")
             .eq("task_id", task_id);
+  
+          if (data.length > 0) {
+            await supabase
+              .from("clickup-task-update-webhook")
+              .update({ status: after.status })
+              .eq("task_id", task_id);
+          } else {
+            await supabase
+              .from("clickup-task-update-webhook")
+              .insert({ task_id, event, webhook_id, status: after.status });
+          }
         } else {
-          await supabase
-            .from("clickup-task-update-webhook")
-            .insert({ task_id, event, webhook_id, status: after.status });
+          console.log("This status we don't care about")
+          res.send("OK");
         }
-      } else {
-        console.log("This status we don't care about")
-        res.send("OK");
       }
     }
   }
