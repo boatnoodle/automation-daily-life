@@ -4,9 +4,8 @@ const { createClient } = require("@supabase/supabase-js");
 const fetch = require("node-fetch");
 const { WebClient } = require("@slack/web-api");
 
-const SUPABASE_URL = "https://euygtomxdupnmvsyvbud.supabase.co";
-const SUPABASE_KEY =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV1eWd0b214ZHVwbm12c3l2YnVkIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTY3MTY2NzkxMSwiZXhwIjoxOTg3MjQzOTExfQ.CXIXNfLrfGgmKZ4SmXePrEvenSl8OKY3xmVFRE5qrjA";
+const SUPABASE_URL = process.env.SUPABASE_URL
+const SUPABASE_KEY = process.env.SUPABASE_KEY
 const USER_OAUTH_TOKEN_SLACK = process.env.USER_OAUTH_TOKEN_SLACK
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -33,7 +32,7 @@ async function sendMessageToSlack(req, res) {
         method: "GET",
         headers: {
           "Content-Type": '"application/json"',
-          Authorization: "pk_3665453_9WVOB8EUVLZFEDJ4B711MM51CPRCKUSO",
+          Authorization: process.env.CLICK_UP_API_KEY,
         },
       }
     );
