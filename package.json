@@ -1,0 +1,24 @@
+{
+  "name": "automation-daily-life",
+  "version": "1.0.0",
+  "description": "app made for helping me using my life easier",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/boatnoodle/automation-daily-life.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/boatnoodle/automation-daily-life/issues"
+  },
+  "homepage": "https://github.com/boatnoodle/automation-daily-life#readme",
+  "dependencies": {
+    "@google-cloud/functions-framework": "^3.1.3",
+    "@slack/web-api": "^6.8.0",
+    "@supabase/supabase-js": "^2.2.1"
+  }
+}
