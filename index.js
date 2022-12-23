@@ -1,3 +1,4 @@
+require('dotenv').config()
 const functions = require("@google-cloud/functions-framework");
 const { createClient } = require("@supabase/supabase-js");
 const fetch = require("node-fetch");
@@ -6,8 +7,7 @@ const { WebClient } = require("@slack/web-api");
 const SUPABASE_URL = "https://euygtomxdupnmvsyvbud.supabase.co";
 const SUPABASE_KEY =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV1eWd0b214ZHVwbm12c3l2YnVkIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTY3MTY2NzkxMSwiZXhwIjoxOTg3MjQzOTExfQ.CXIXNfLrfGgmKZ4SmXePrEvenSl8OKY3xmVFRE5qrjA";
-const USER_OAUTH_TOKEN_SLACK =
-  "xoxp-887407938822-872418203922-4556156778277-6fc3f8703cf8b25188ac6385b4c8dc35";
+const USER_OAUTH_TOKEN_SLACK = process.env.USER_OAUTH_TOKEN_SLACK
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 const slackWebClient = new WebClient(USER_OAUTH_TOKEN_SLACK);
