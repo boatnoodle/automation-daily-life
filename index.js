@@ -69,21 +69,14 @@ async function sendMessageToSlack(req, res) {
 
   //* For done tasks
   const today = new Date();
-  let passed_day = new Date();
-  const dayOfWeek = today.getDay();
-
-  if (dayOfWeek === 1) {
-    //* this is Monday so should get done task backward for 2 days which is Friday.
-    passed_day.setDate(passed_day.getDate() - 2);
-  } else {
-    passed_day.setDate(passed_day.getDate() - 1);
-  }
+  let past_day = new Date();
+  past_day.setDate(past_day.getDate() - 1);
 
   const { data, error } = await supabase
     .from("clickup-task-update-webhook")
     .select("*")
     .lt("created_at", today.toISOString())
-    .gt("created_at", passed_day.toISOString());
+    .gt("created_at", past_day.toISOString());
 
   for (const each of data) {
     const response = await fetch(
@@ -110,18 +103,6 @@ async function sendMessageToSlack(req, res) {
 
   //* Create blocks message for Slack
   const blocks = [
-    {
-      type: "section",
-      text: {
-        type: "mrkdwn",
-        text: isWeekend(today)
-          ? "🎉 This is weekend. Hope you guys enjoy with this holiday krub."
-          : "👋 Good morning my team. This message has been generated from my scheduler. And my updates are following.",
-      },
-    },
-    {
-      type: "divider",
-    },
     {
       type: "section",
       text: {
@@ -173,7 +154,7 @@ async function manageClickUpWebhook(req, res) {
                 .update({ status: after.status })
                 .eq("task_id", task_id);
             }
-          } else if(after.status === "done") {
+          } else if (after.status === "done") {
             await supabase
               .from("clickup-task-update-webhook")
               .insert({ task_id, event, webhook_id, status: after.status });
