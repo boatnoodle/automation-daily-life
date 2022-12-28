@@ -62,7 +62,6 @@ async function sendMessageToSlack(req, res) {
         getTaskPointMessage(task.points) +
         " " +
         task.name +
-        ` ${task.url}` +
         "\n\n";
     }
   }
@@ -96,7 +95,6 @@ async function sendMessageToSlack(req, res) {
         getTaskPointMessage(task.points) +
         " " +
         task.name +
-        ` ${task.url}` +
         "\n\n";
     }
   }
